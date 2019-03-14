@@ -1,0 +1,65 @@
+<wxs module="utils">
+module.exports.max = function(n1, n2) {
+  return Math.max(n1, n2)
+}
+module.exports.len = function(arr) {
+  arr = arr || []
+  return arr.length
+}
+var sub = function(val) {
+  if (val.length == 0 || val == undefined) {
+    return;
+  }
+  if (val.length > 17) {
+    return val.substring(0, 17) + "...";
+  } else {
+    return val;
+  }
+}
+module.exports.sub = sub;
+</wxs>
+
+<!--pages/index/index.wxml-->
+<view class="container">
+  <button class="btn" bindtap="startSearch">开始搜寻设备</button>
+  <button class="btn" bindtap="endSearch">停止搜寻设备</button>
+  <!-- <view wx:if = "1">{{tag1}}</view> -->
+</view>
+
+<view class="info">
+  <view class="title">所有设备列表</view>
+  <view class = "window_view">
+    <button class='button' bindtap='sortRSSI'>排序</button>
+    <view class = "search">
+      <!-- <input type = "text" confirm-type='search' placeholder='查找设备' bindinput="search"></input>      
+      <button class = "button" bindtap = "search">搜索</button> -->
+      <input type="text" bindinput='wxSearchInput' placeholder='查找设备' bindtap='wxSearchInput'></input>      
+    </view>
+    <button class='button' bindtap='wxSearchInput' float = "">搜索</button>
+  </view>
+  <view
+    class="ite"
+    wx:for="{{devices}}"
+    wx:key="index"
+    data-deviceid="{{item.deviceId}}"
+    data-name="{{item.name}}"
+    catchtap="toConnect"
+    >
+      <view class="tit">name: {{item.name}}</view>
+      <view class="detail" style="font-size: 12px">AdverData: {{item.advertisData}}</view>
+      <view class="detail" style="font-size: 12px">信号强度: {{item.RSSI}}dBm ({{utils.max(0, item.RSSI + 100)}}%)</view>
+      <view class="detail" style="font-size: 12px">deviceID: {{item.deviceId}}</view>
+    </view>
+
+  <block wx:for="{{devicesList}}" wx:key="*this">
+  <template is="lists" data="{{...item}}"/>
+      <view class="tit">name: {{item.name}}</view>
+      <view class="detail" style="font-size: 12px">AdverData: {{item.advertisData}}</view>
+      <view class="detail" style="font-size: 12px">信号强度: {{item.RSSI}}dBm ({{utils.max(0, item.RSSI + 100)}}%)</view>
+      <view class="detail" style="font-size: 12px">deviceID: {{item.deviceId}}</view>
+  </block>
+
+</view>
+
+<import src="../../components/toast/toast.wxml"/>
+<template is="toast" data="{{ ...wxu.toast }}"/>
